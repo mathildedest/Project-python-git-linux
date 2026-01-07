@@ -5,30 +5,30 @@ import numpy as np
 
 def fetch_price_history(asset_id: str, vs_currency: str = "eur", days: int = 365) -> pd.DataFrame:
     """
-    Récupère l'historique de prix d'un actif via l'API CoinGecko.
+    Fetch historical prices for a single asset from the CoinGecko API.
 
     Parameters
     ----------
     asset_id : str
-        Identifiant CoinGecko ("bitcoin", "ethereum", etc.)
+        CoinGecko ID (e.g. "bitcoin", "ethereum").
     vs_currency : str
-        Devise de cotation ("eur" par défaut).
+        Quote currency ("eur" by default).
     days : int
-        Nombre de jours d'historique à récupérer.
+        Number of days of history to fetch.
     """
     url = f"https://api.coingecko.com/api/v3/coins/{asset_id}/market_chart"
     params = {"vs_currency": vs_currency, "days": days}
 
-    # Ici je reste volontairement simple : un seul appel, pas de logique de retry avancée
+    # Simple call, no retry logic to keep things readable
     response = requests.get(url, params=params, timeout=10)
 
     if response.status_code != 200:
-        # Dans l'app Streamlit je gère ça avec un message d'erreur plutôt que de crasher
+        # In the Streamlit app, I catch this and display an error instead of crashing
         raise ValueError(f"API error for {asset_id}: {response.status_code}")
 
     data = response.json()
 
-    # CoinGecko renvoie une liste de [timestamp_ms, price]
+    # CoinGecko returns a list of [timestamp_ms, price]
     prices = data.get("prices")
     if not prices:
         raise ValueError(f"No 'prices' field in API response for {asset_id}")
@@ -41,31 +41,31 @@ def fetch_price_history(asset_id: str, vs_currency: str = "eur", days: int = 365
 
 def build_price_matrix(assets: dict, vs_currency: str = "eur", days: int = 365) -> pd.DataFrame:
     """
-    Récupère les prix pour plusieurs actifs et les met dans un seul DataFrame.
+    Fetch prices for several assets and build a single price matrix.
 
     Parameters
     ----------
     assets : dict
-        mapping label -> coingecko_id (ex: {"Bitcoin (BTC)": "bitcoin"}).
+        Mapping label -> CoinGecko ID (e.g. {"Bitcoin (BTC)": "bitcoin"}).
     """
     all_series = []
     for label, asset_id in assets.items():
         df_asset = fetch_price_history(asset_id, vs_currency=vs_currency, days=days)
-        # Je renomme la colonne price avec le label de l'actif pour être plus lisible
+        # Rename 'price' column with asset label to keep the matrix readable
         df_asset = df_asset.rename(columns={"price": label})
         all_series.append(df_asset)
 
     if not all_series:
         raise ValueError("No assets provided")
 
-    # Concaténation sur l'index temps, puis on enlève les lignes avec NaN
+    # Concatenate on the time index and drop rows with missing values
     prices = pd.concat(all_series, axis=1).dropna()
     return prices
 
 
 def compute_returns(price_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Rendements simples : (P_t / P_{t-1} - 1).
+    Simple returns: (P_t / P_{t-1} - 1).
     """
     returns = price_df.pct_change().dropna()
     return returns
@@ -73,19 +73,19 @@ def compute_returns(price_df: pd.DataFrame) -> pd.DataFrame:
 
 def compute_portfolio_returns(returns: pd.DataFrame, weights: dict) -> pd.Series:
     """
-    Rendements du portefeuille à partir des rendements individuels et de poids.
+    Compute portfolio returns from individual asset returns and weights.
 
-    Hypothèses simplificatrices :
-    - poids statiques (pas de rebalancement effectif dans ce code)
-    - pas de coûts de transaction
+    Simplifying assumptions:
+    - static weights (no actual rebalancing in this code),
+    - no transaction costs.
     """
-    # On aligne l'ordre des poids avec les colonnes du DataFrame
+    # Align weights with the order of the columns in the returns DataFrame
     w = np.array([weights.get(col, 0.0) for col in returns.columns], dtype=float)
     if w.sum() == 0:
-        # Pour éviter division par zéro, je laisse l'app gérer ce cas
+        # I let the app handle this case to avoid division by zero
         raise ValueError("Sum of weights is zero.")
 
-    # Normalisation au cas où la somme n'est pas exactement 1
+    # Normalize in case the sum is not exactly 1
     w = w / w.sum()
 
     port_ret = (returns * w).sum(axis=1)
@@ -94,13 +94,13 @@ def compute_portfolio_returns(returns: pd.DataFrame, weights: dict) -> pd.Series
 
 def basic_stats(returns: pd.Series, periods_per_year: int = 365) -> dict:
     """
-    Quelques stats basiques sur le portefeuille.
+    Basic portfolio statistics.
 
-    - rendement moyen
-    - volatilité
-    - version annualisée
-    - drawdown max
-    - valeur finale (en partant de 1)
+    - mean return
+    - volatility
+    - annualized versions
+    - max drawdown
+    - final value (starting from 1)
     """
     if returns.empty:
         return {}
@@ -108,7 +108,7 @@ def basic_stats(returns: pd.Series, periods_per_year: int = 365) -> dict:
     mean_ret = returns.mean()
     vol = returns.std()
 
-    # Annualisation vraiment simple (comme en cours)
+    # Very simple annualization (as in lectures)
     ann_ret = (1 + mean_ret) ** periods_per_year - 1
     ann_vol = vol * np.sqrt(periods_per_year)
 
