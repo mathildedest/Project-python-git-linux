@@ -24,7 +24,6 @@ def run_quant_b_page():
         "we build a simple portfolio with customizable weights."
     )
 
-    # I stay with crypto assets to be consistent with the Quant A module
     available_assets = {
         "Bitcoin (BTC)": "bitcoin",
         "Ethereum (ETH)": "ethereum",
@@ -57,6 +56,7 @@ def run_quant_b_page():
     # ---------------------------
     # Button to load data
     # ---------------------------
+    
     if "prices" not in st.session_state:
         st.session_state["prices"] = None
         st.session_state["selected_labels"] = None
@@ -81,7 +81,6 @@ def run_quant_b_page():
     st.write("Last rows of price data (in EUR):")
     st.dataframe(prices.tail())
 
-    # Extract short tickers, e.g. "Bitcoin (BTC)" -> "BTC"
     tickers = {}
     for label in stored_labels:
         if "(" in label and ")" in label:
@@ -93,6 +92,7 @@ def run_quant_b_page():
     # ---------------------------
     # 2. Portfolio weights
     # ---------------------------
+    
     st.subheader("2. Portfolio weights")
 
     st.markdown(
@@ -124,14 +124,12 @@ def run_quant_b_page():
                 key=f"weight_{t}",
             )
             raw_weights[t] = w / 100.0
-
-    # rename columns with tickers (BTC, ETH, etc.)
+            
     prices = prices.copy()
     prices.columns = [tickers[label] for label in stored_labels]
 
     returns = compute_returns(prices)
-
-    # Build weights dict in same order as DataFrame columns
+    
     weights = {col: raw_weights.get(col, 0.0) for col in prices.columns}
 
     try:
@@ -145,6 +143,7 @@ def run_quant_b_page():
     # ---------------------------
     # 3. Charts
     # ---------------------------
+    
     st.subheader("3. Charts")
 
     st.markdown("**Individual price series (normalized to 1 at the start)**")
@@ -155,8 +154,7 @@ def run_quant_b_page():
     combined = norm_prices.copy()
     combined["Portfolio"] = port_value / port_value.iloc[0]
     st.line_chart(combined)
-
-    # Correlation matrix
+    
     st.markdown("**Correlation matrix of returns**")
     corr = returns.corr()
 
@@ -172,6 +170,7 @@ def run_quant_b_page():
     # ---------------------------
     # 4. Portfolio indicators
     # ---------------------------
+    
     st.subheader("4. Portfolio indicators")
 
     stats = basic_stats(port_ret)
