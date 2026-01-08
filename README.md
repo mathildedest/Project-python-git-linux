@@ -146,7 +146,7 @@ Quant B complements Quant A by moving from single-asset analysis to multi-asset 
 - `quant_b_dashboard.py`: Streamlit dashboard logic
 - `quant_b_app.py`: standalone entry point for Quant B
 
-'quant_b_portfolio.py'
+`quant_b_portfolio.py`
 
 Back-end logic of the Quant B module.
 
@@ -162,7 +162,7 @@ Responsibilities :
 
 - compute basic portfolio statistics
 
-'quant_b_dashboard.py'
+`quant_b_dashboard.py`
 
 Streamlit dashboard logic for the Quant B module.
 
@@ -176,7 +176,7 @@ Responsibilities :
 
 This file does not modify 'app.py' and is fully independent.
 
-'quant_b_app.py'
+`quant_b_app.py`
 
 Standalone Streamlit entry point for Quant B.
 
