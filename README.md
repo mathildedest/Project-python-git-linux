@@ -141,3 +141,12 @@ This module focuses on :
 Quant B complements Quant A by moving from single-asset analysis to multi-asset portfolio analysis.
 
 ## Project structure (Quant B)
+
+- `quant_b_portfolio.py`: back-end portfolio logic  
+- `quant_b_dashboard.py`: Streamlit dashboard  
+- `quant_b_app.py`: standalone Streamlit app
+
+## Run Quant B dashboard
+
+```bash
+streamlit run quant_b_app.py
