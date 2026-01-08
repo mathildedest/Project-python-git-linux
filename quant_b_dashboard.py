@@ -10,12 +10,6 @@ from quant_b_portfolio import (
 
 
 def run_quant_b_page():
-    """
-    Streamlit page for the Quant B module (multi-asset portfolio).
-
-    I keep it in a separate module so I don't modify app.py.
-    In the quant-b branch, I just need to import this function and call it.
-    """
 
     st.header("Quant B – Multi-Asset Portfolio")
 
@@ -103,11 +97,6 @@ def run_quant_b_page():
     rebalance_freq = st.selectbox(
         "Theoretical rebalancing frequency",
         ["None (buy & hold)", "Weekly", "Monthly"],
-        help=(
-            "To keep things simple I keep static weights in the code. "
-            "To go further, we could resample returns at the chosen frequency "
-            "and recompute the weights over time."
-        ),
     )
 
     cols = st.columns(len(stored_labels))
@@ -188,8 +177,4 @@ def run_quant_b_page():
 
     st.write(f"Max drawdown: {stats['max_drawdown']*100:.1f} %")
 
-    st.caption(
-        "The calculations are intentionally simple (no fees, no slippage, "
-        "static weights). It is enough to illustrate the diversification effect."
-    )
 
