@@ -142,11 +142,164 @@ Quant B complements Quant A by moving from single-asset analysis to multi-asset 
 
 ## Project structure (Quant B)
 
-- `quant_b_portfolio.py`: back-end portfolio logic  
-- `quant_b_dashboard.py`: Streamlit dashboard  
-- `quant_b_app.py`: standalone Streamlit app
+- `quant_b_portfolio.py`: portfolio computations and statistics
+- `quant_b_dashboard.py`: Streamlit dashboard logic
+- `quant_b_app.py`: standalone entry point for Quant B
 
-## Run Quant B dashboard
+'quant_b_portfolio.py'
+
+Back-end logic of the Quant B module.
+
+Responsibilities :
+
+- retrieve historical prices for multiple assets
+
+- build a price matrix
+
+- compute asset returns
+
+- compute portfolio returns based on weights
+
+- compute basic portfolio statistics
+
+'quant_b_dashboard.py'
+
+Streamlit dashboard logic for the Quant B module.
+
+Responsibilities :
+
+- user interaction (asset selection, weights, parameters)
+
+- data visualization
+
+- portfolio comparison and metrics display
+
+This file does not modify 'app.py' and is fully independent.
+
+'quant_b_app.py'
+
+Standalone Streamlit entry point for Quant B.
+
+It allows the Quant B module to be run independently without touching the Quant A application.
+
+Command to launch :
 
 ```bash
 streamlit run quant_b_app.py
+```
+
+## Streamlit dashboard (Quant B)
+
+The Quant B dashboard allows the user to analyze a multi-asset portfolio interactively.
+
+Main features
+
+- select at least 3 assets simultaneously
+
+- choose the historical depth (number of days)
+
+- load price data dynamically from an API
+
+- assign custom portfolio weights
+
+- visualize individual assets and portfolio performance
+
+- analyze diversification through correlation
+
+The dashboard is intentionally simple and readable.
+
+## Assets and data source
+
+The assets used in Quant B are cryptocurrencies :
+
+- Bitcoin (BTC)
+
+- Ethereum (ETH)
+
+- Solana (SOL)
+
+- Ripple (XRP)
+
+Prices are retrieved using the CoinGecko public API.
+
+All prices are expressed in EUR.
+
+No API key is required, and the application handles API errors gracefully.
+
+## Portfolio construction
+
+The user defines target weights for each asset (in percentage).
+
+Key assumptions :
+
+- weights are normalized so the total equals 100%
+
+- no transaction costs
+
+- no slippage
+
+- static weights (buy & hold portfolio)
+
+The goal is to illustrate portfolio allocation, not to optimize it.
+
+## Visualizations
+
+The dashboard includes several charts:
+
+## 1. Normalized price series
+
+All asset prices are normalized to 1 at the start date.
+
+Purpose :
+
+- compare performance independently of price levels
+
+## 2. Portfolio vs individual assets
+
+The cumulative value of the portfolio is plotted alongside individual assets.
+
+Purpose :
+
+- visualize the diversification effect
+
+- compare portfolio performance to single assets
+
+## 3. Correlation matrix
+
+A correlation matrix of asset returns is displayed as a heatmap.
+
+Purpose:
+
+- analyze relationships between assets
+
+- identify diversification potential
+
+## Portfolio metrics
+
+The following indicators are computed for the portfolio :
+
+- final value (base 1)
+
+- annualized return (simple)
+
+- annualized volatility
+
+- maximum drawdown
+
+These metrics provide a simple but effective overview of portfolio performance and risk. 
+
+## Design choices
+
+The Quant B module is designed to be :
+
+- simple and readable
+
+- fully independent from Quant A
+
+- focused on educational clarity rather than optimization
+
+- robust to missing data and API errors
+
+The goal is to demonstrate core portfolio concepts:
+diversification, correlation, risk, and performance.
+
