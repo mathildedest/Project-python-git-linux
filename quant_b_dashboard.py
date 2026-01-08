@@ -91,7 +91,6 @@ def run_quant_b_page():
 
     st.markdown(
         "The user chooses the **target weights**. "
-        "Then I renormalize them so the sum is 100%."
     )
 
     rebalance_freq = st.selectbox(
