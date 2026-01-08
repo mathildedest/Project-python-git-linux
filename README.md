@@ -121,3 +121,23 @@ The cron job runs every day at **20:00**:
 
 ```bash
 0 20 * * * cd /home/mathilde_dest/Project-python-git-linux && /home/mathilde_dest/Project-python-git-linux/venv/bin/python scripts/daily_report.py >> reports/cron.log 2>&1
+```
+## Quant B - Multivariate - Multi-Asset Portfolio Module
+
+Objective
+
+The goal of Quant B is to extend the project to multiple assets and build a portfolio analysis dashboard using Python and Streamlit.
+
+This module focuses on:
+
+- simultaneous analysis of several assets
+
+- portfolio construction with user-defined weights
+
+- diversification analysis
+
+- portfolio performance and risk metrics
+
+- clear and interactive visualizations
+
+Quant B complements Quant A by moving from single-asset analysis to multi-asset portfolio analysis.
