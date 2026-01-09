@@ -46,12 +46,13 @@ Main features:
 - compute basic metrics
 
 The application is intentionally simple and readable.
+Because CoinGecko is a free public API, rate limits may occur if too many requests are sent in a short time.
 
 ---
 
 ## Asset and data source
 
-For this project, the asset used is **Bitcoin** with prices in **EUR**.
+For this project, the dashboard focuses on one asset at a time (e.g. Bitcoin or Ethereum).
 
 Prices are fetched using a public API (CoinGecko).
 Because the API has rate limits, prices are saved locally and reused for analysis.
@@ -122,6 +123,19 @@ The cron job runs every day at **20:00**:
 ```bash
 0 20 * * * cd /home/mathilde_dest/Project-python-git-linux && /home/mathilde_dest/Project-python-git-linux/venv/bin/python scripts/daily_report.py >> reports/cron.log 2>&1
 ```
+
+How to run Quant A
+
+1. Install dependencies
+pip install -r requirements.txt
+
+2. Run the Streamlit app
+streamlit run app.py
+
+3. Open the dashboard in a browser
+http://localhost:8501
+
+
 ## Quant B - Multivariate - Multi-Asset Portfolio Module
 
 The goal of Quant B is to extend the project to multiple assets and build a portfolio analysis dashboard using Python and Streamlit.
